@@ -12,29 +12,23 @@
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 10px;
+      padding: 15px;
       margin: 0;
       background-color: #f5f5f5;
-      /* Erhöhte padding für besseren Abstand auf kleineren Geräten */
-      padding: 15px; 
     }
 
     h1 {
-      /* Relative Schriftgröße für bessere Skalierung */
-      font-size: 5vw; 
+      font-size: 5vw;
       margin-bottom: 5px;
-      /* Maximale Schriftgröße, um auf größeren Bildschirmen nicht zu groß zu werden */
-      max-font-size: 32px; 
+      max-font-size: 32px;
     }
 
     h3 {
       font-weight: normal;
       color: #555;
-      /* Relative Schriftgröße für bessere Skalierung */
-      font-size: 3vw; 
+      font-size: 3vw;
       margin-bottom: 20px;
-      /* Maximale Schriftgröße */
-      max-font-size: 20px; 
+      max-font-size: 20px;
     }
 
     #word-bank {
@@ -43,15 +37,13 @@
       gap: 10px;
       justify-content: center;
       margin-bottom: 20px;
-      /* Zusätzliches Padding für bessere Lesbarkeit auf Tablets */
-      padding: 0 10px; 
+      padding: 0 10px;
     }
 
     .word {
       padding: 8px 14px;
       border-radius: 10px;
-      /* Relative Schriftgröße für Wörter */
-      font-size: 3.5vw; 
+      font-size: 3.5vw;
       font-weight: bold;
       cursor: grab;
       user-select: none;
@@ -61,24 +53,27 @@
       background-color: white;
       position: relative;
       z-index: 1;
-      /* Maximale Schriftgröße für Wörter */
-      max-font-size: 18px; 
+      max-font-size: 18px;
     }
 
     .ampel {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
+      /* ÄNDERUNG: Kreise nebeneinander anordnen */
+      flex-direction: row; 
+      /* ÄNDERUNG: Gleichmäßiger Abstand zwischen den Kreisen */
+      justify-content: center; 
+      /* ÄNDERUNG: Elemente vertikal zentrieren */
+      align-items: flex-start; /* Oder 'center', je nach gewünschter Ausrichtung, 'flex-start' hält sie oben */
+      gap: 20px; /* Reduzierter Abstand, damit sie besser auf eine Seite passen */
       padding-bottom: 100px;
-      /* Zusätzliches Padding für Tablets */
-      padding-top: 20px; 
+      padding-top: 20px;
+      flex-wrap: wrap; /* WICHTIG: Erlaubt das Umbrechen auf die nächste Zeile bei Platzmangel */
     }
 
     .feld {
-      /* Beibehaltung von 90vw, aber mit einer angepassten maximalen Breite für iPads und größere Tablets */
-      width: 90vw; 
-      max-width: 350px; /* Angepasst für iPads */
+      /* Angepasste Breite für 3 Kreise nebeneinander */
+      width: calc(30vw - 20px); /* 30vw für jeden Kreis, minus 2x10px für gap */
+      max-width: 250px; /* Reduzierte max-width für iPad, damit 3 nebeneinander passen */
       aspect-ratio: 1 / 1;
       border-radius: 50%;
       border: 5px solid #333;
@@ -89,6 +84,8 @@
       position: relative;
       gap: 8px;
       padding: 12px;
+      min-height: 100px; /* Mindesthöhe für bessere Darstellung auf kleinen Bildschirmen */
+      min-width: 100px; /* Mindestbreite */
     }
 
     .feld .label {
@@ -96,15 +93,13 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      /* Relative Schriftgröße für Labels */
-      font-size: 3.8vw; 
+      font-size: 3.8vw;
       font-weight: bold;
       color: black;
       pointer-events: none;
       max-width: 80%;
       line-height: 1.3;
-      /* Maximale Schriftgröße für Labels */
-      max-font-size: 20px; 
+      max-font-size: 18px; /* Reduzierte max-font-size für Labels, um besser zu passen */
     }
 
     .feld.over {
@@ -141,43 +136,50 @@
     /* Media Queries für iPads (Beispiel) */
     @media (min-width: 768px) and (max-width: 1024px) {
       h1 {
-        font-size: 4vw; /* Etwas kleinere Überschrift auf iPads */
+        font-size: 4vw;
         max-font-size: 28px;
       }
       h3 {
-        font-size: 2.5vw; /* Etwas kleinere Unterüberschrift auf iPads */
+        font-size: 2.5vw;
         max-font-size: 18px;
       }
       .word {
-        font-size: 2.8vw; /* Angepasste Wortgröße für iPads */
+        font-size: 2.8vw;
         max-font-size: 16px;
-        padding: 10px 16px; /* Etwas mehr Padding für bessere Touch-Ziele */
+        padding: 10px 16px;
       }
       .feld {
-        max-width: 380px; /* Etwas größere Felder auf iPads */
+        width: calc(30vw - 20px); /* Beibehalten oder leicht anpassen */
+        max-width: 280px; /* Angepasste max-width für iPad querformat */
       }
       .feld .label {
-        font-size: 3vw; /* Angepasste Label-Größe für iPads */
-        max-font-size: 18px;
+        font-size: 2.8vw; /* Angepasste Label-Größe für iPad */
+        max-font-size: 16px;
       }
     }
 
-    /* Media Query für noch größere Bildschirme (optional) */
-    @media (min-width: 1025px) {
-      h1 {
-        font-size: 28px;
-      }
-      h3 {
-        font-size: 18px;
-      }
-      .word {
-        font-size: 16px;
+    /* Media Query für Mobiltelefone (Hochformat) */
+    @media (max-width: 767px) {
+      .ampel {
+        flex-direction: column; /* Auf kleinen Bildschirmen wieder untereinander */
+        align-items: center;
+        gap: 30px;
       }
       .feld {
-        max-width: 400px;
+        width: 80vw; /* Breitere Felder auf Mobilgeräten */
+        max-width: 300px;
+      }
+      h1 {
+        font-size: 6vw;
+      }
+      h3 {
+        font-size: 4vw;
+      }
+      .word {
+        font-size: 4vw;
       }
       .feld .label {
-        font-size: 18px;
+        font-size: 4.5vw;
       }
     }
   </style>
