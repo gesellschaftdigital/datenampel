@@ -15,17 +15,26 @@
       padding: 10px;
       margin: 0;
       background-color: #f5f5f5;
+      /* Erhöhte padding für besseren Abstand auf kleineren Geräten */
+      padding: 15px; 
     }
 
     h1 {
-      font-size: 22px;
+      /* Relative Schriftgröße für bessere Skalierung */
+      font-size: 5vw; 
       margin-bottom: 5px;
+      /* Maximale Schriftgröße, um auf größeren Bildschirmen nicht zu groß zu werden */
+      max-font-size: 32px; 
     }
 
     h3 {
       font-weight: normal;
       color: #555;
+      /* Relative Schriftgröße für bessere Skalierung */
+      font-size: 3vw; 
       margin-bottom: 20px;
+      /* Maximale Schriftgröße */
+      max-font-size: 20px; 
     }
 
     #word-bank {
@@ -34,12 +43,15 @@
       gap: 10px;
       justify-content: center;
       margin-bottom: 20px;
+      /* Zusätzliches Padding für bessere Lesbarkeit auf Tablets */
+      padding: 0 10px; 
     }
 
     .word {
       padding: 8px 14px;
       border-radius: 10px;
-      font-size: 14px;
+      /* Relative Schriftgröße für Wörter */
+      font-size: 3.5vw; 
       font-weight: bold;
       cursor: grab;
       user-select: none;
@@ -49,6 +61,8 @@
       background-color: white;
       position: relative;
       z-index: 1;
+      /* Maximale Schriftgröße für Wörter */
+      max-font-size: 18px; 
     }
 
     .ampel {
@@ -57,11 +71,14 @@
       align-items: center;
       gap: 30px;
       padding-bottom: 100px;
+      /* Zusätzliches Padding für Tablets */
+      padding-top: 20px; 
     }
 
     .feld {
-      width: 90vw;
-      max-width: 400px;
+      /* Beibehaltung von 90vw, aber mit einer angepassten maximalen Breite für iPads und größere Tablets */
+      width: 90vw; 
+      max-width: 350px; /* Angepasst für iPads */
       aspect-ratio: 1 / 1;
       border-radius: 50%;
       border: 5px solid #333;
@@ -79,12 +96,15 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 16px;
+      /* Relative Schriftgröße für Labels */
+      font-size: 3.8vw; 
       font-weight: bold;
       color: black;
       pointer-events: none;
       max-width: 80%;
       line-height: 1.3;
+      /* Maximale Schriftgröße für Labels */
+      max-font-size: 20px; 
     }
 
     .feld.over {
@@ -95,7 +115,7 @@
     .gelb   { background-color: #fdd835; }
     .gruen  { background-color: #43a047; }
 
-    /* Farben für Begriffe */
+    /* Farben für Begriffe (unverändert) */
     .vorname         { background-color: #f28b82; }
     .nachname        { background-color: #aecbfa; }
     .adresse         { background-color: #ccff90; }
@@ -117,6 +137,49 @@
     .lieblingstier   { background-color: #cfe2f3; }
     .hobby           { background-color: #e7e6ff; }
     .lieblingsfach   { background-color: #fff2cc; }
+
+    /* Media Queries für iPads (Beispiel) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      h1 {
+        font-size: 4vw; /* Etwas kleinere Überschrift auf iPads */
+        max-font-size: 28px;
+      }
+      h3 {
+        font-size: 2.5vw; /* Etwas kleinere Unterüberschrift auf iPads */
+        max-font-size: 18px;
+      }
+      .word {
+        font-size: 2.8vw; /* Angepasste Wortgröße für iPads */
+        max-font-size: 16px;
+        padding: 10px 16px; /* Etwas mehr Padding für bessere Touch-Ziele */
+      }
+      .feld {
+        max-width: 380px; /* Etwas größere Felder auf iPads */
+      }
+      .feld .label {
+        font-size: 3vw; /* Angepasste Label-Größe für iPads */
+        max-font-size: 18px;
+      }
+    }
+
+    /* Media Query für noch größere Bildschirme (optional) */
+    @media (min-width: 1025px) {
+      h1 {
+        font-size: 28px;
+      }
+      h3 {
+        font-size: 18px;
+      }
+      .word {
+        font-size: 16px;
+      }
+      .feld {
+        max-width: 400px;
+      }
+      .feld .label {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
