@@ -58,22 +58,20 @@
 
     .ampel {
       display: flex;
-      /* ÄNDERUNG: Kreise nebeneinander anordnen */
-      flex-direction: row; 
-      /* ÄNDERUNG: Gleichmäßiger Abstand zwischen den Kreisen */
-      justify-content: center; 
-      /* ÄNDERUNG: Elemente vertikal zentrieren */
-      align-items: flex-start; /* Oder 'center', je nach gewünschter Ausrichtung, 'flex-start' hält sie oben */
-      gap: 20px; /* Reduzierter Abstand, damit sie besser auf eine Seite passen */
+      /* ÄNDERUNG: Kreise wieder untereinander anordnen */
+      flex-direction: column; 
+      /* Kreise im Container zentrieren */
+      align-items: center; 
+      gap: 30px; /* Mehr Abstand zwischen den Kreisen, da sie vertikal sind */
       padding-bottom: 100px;
       padding-top: 20px;
-      flex-wrap: wrap; /* WICHTIG: Erlaubt das Umbrechen auf die nächste Zeile bei Platzmangel */
+      /* flex-wrap wird hier nicht mehr benötigt, da sie untereinander sind */
     }
 
     .feld {
-      /* Angepasste Breite für 3 Kreise nebeneinander */
-      width: calc(30vw - 20px); /* 30vw für jeden Kreis, minus 2x10px für gap */
-      max-width: 250px; /* Reduzierte max-width für iPad, damit 3 nebeneinander passen */
+      /* Breite angepasst für vertikale Anordnung, aber weiterhin verkleinert */
+      width: 70vw; /* 70% der Viewport-Breite, lässt Platz an den Seiten */
+      max-width: 280px; /* Maximale Breite, um nicht zu groß zu werden (entspricht ca. 10% kleiner als 300px) */
       aspect-ratio: 1 / 1;
       border-radius: 50%;
       border: 5px solid #333;
@@ -83,9 +81,9 @@
       justify-content: center;
       position: relative;
       gap: 8px;
-      padding: 12px;
-      min-height: 100px; /* Mindesthöhe für bessere Darstellung auf kleinen Bildschirmen */
-      min-width: 100px; /* Mindestbreite */
+      padding: 10px;
+      min-height: 90px;
+      min-width: 90px;
     }
 
     .feld .label {
@@ -93,13 +91,13 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 3.8vw;
+      font-size: 3.4vw; 
       font-weight: bold;
       color: black;
       pointer-events: none;
       max-width: 80%;
       line-height: 1.3;
-      max-font-size: 18px; /* Reduzierte max-font-size für Labels, um besser zu passen */
+      max-font-size: 16px;
     }
 
     .feld.over {
@@ -133,7 +131,8 @@
     .hobby           { background-color: #e7e6ff; }
     .lieblingsfach   { background-color: #fff2cc; }
 
-    /* Media Queries für iPads (Beispiel) */
+    /* Media Queries bleiben für Schriftgrößen und allgemeine Responsivität,
+       aber die Hauptanordnung ist jetzt vertikal */
     @media (min-width: 768px) and (max-width: 1024px) {
       h1 {
         font-size: 4vw;
@@ -149,25 +148,29 @@
         padding: 10px 16px;
       }
       .feld {
-        width: calc(30vw - 20px); /* Beibehalten oder leicht anpassen */
-        max-width: 280px; /* Angepasste max-width für iPad querformat */
+        /* Breite für iPad im Hoch- oder Querformat, wenn sie untereinander sind */
+        width: 60vw; /* Etwas kleiner als 70vw, da iPads mehr Platz haben */
+        max-width: 320px; /* Erhöhte max-width für iPad, da sie nun mehr Platz haben */
       }
       .feld .label {
-        font-size: 2.8vw; /* Angepasste Label-Größe für iPad */
-        max-font-size: 16px;
+        font-size: 2.5vw;
+        max-font-size: 15px;
+      }
+    }
+
+    /* Media Query für noch größere Bildschirme */
+    @media (min-width: 1025px) {
+      .feld {
+        width: 50vw; /* Noch etwas kleiner für sehr große Bildschirme */
+        max-width: 350px; /* Maximale Breite auf Desktop */
       }
     }
 
     /* Media Query für Mobiltelefone (Hochformat) */
     @media (max-width: 767px) {
-      .ampel {
-        flex-direction: column; /* Auf kleinen Bildschirmen wieder untereinander */
-        align-items: center;
-        gap: 30px;
-      }
       .feld {
-        width: 80vw; /* Breitere Felder auf Mobilgeräten */
-        max-width: 300px;
+        width: 85vw; /* Etwas breiter auf kleinsten Bildschirmen */
+        max-width: 280px; 
       }
       h1 {
         font-size: 6vw;
