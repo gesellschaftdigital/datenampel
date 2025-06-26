@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Persönliche Daten Ampel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: sans-serif;
       text-align: center;
@@ -21,7 +25,7 @@
     h3 {
       font-weight: normal;
       color: #555;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     #word-bank {
@@ -42,8 +46,9 @@
       touch-action: none;
       box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
       border: 2px solid #333;
-      position: relative;
       background-color: white;
+      position: relative;
+      z-index: 1;
     }
 
     .ampel {
@@ -51,42 +56,44 @@
       flex-direction: column;
       align-items: center;
       gap: 30px;
+      padding-bottom: 100px;
     }
 
     .feld {
       width: 90vw;
       max-width: 400px;
-      height: 90vw;
-      max-height: 400px;
+      aspect-ratio: 1 / 1;
       border-radius: 50%;
       border: 5px solid #333;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      gap: 12px;
-      font-size: 16px;
-      background-clip: padding-box;
-      box-sizing: border-box;
+      position: relative;
+      gap: 8px;
+      padding: 12px;
     }
 
     .feld .label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       font-size: 16px;
       font-weight: bold;
       color: black;
-      text-align: center;
-      max-width: 90%;
-      line-height: 1.3;
       pointer-events: none;
+      max-width: 80%;
+      line-height: 1.3;
     }
-
-    .rot    { background-color: #e57373; }
-    .gelb   { background-color: #fff176; }
-    .gruen  { background-color: #81c784; }
 
     .feld.over {
       outline: 3px dashed #000;
     }
+
+    .rot    { background-color: #e53935; }
+    .gelb   { background-color: #fdd835; }
+    .gruen  { background-color: #43a047; }
 
     /* Farben für Begriffe */
     .vorname         { background-color: #f28b82; }
@@ -150,16 +157,47 @@
   <script>
     const words = document.querySelectorAll('.word');
     const fields = document.querySelectorAll('.feld');
-    const bank = document.getElementById('word-bank');
+    const wordBank = document.getElementById('word-bank');
 
+    // IDs zuweisen für Drag & Drop
+    words.forEach((word, index) => {
+      word.setAttribute('data-id', 'w' + index);
+    });
+
+    // === Maus-Drag & Drop ===
+    words.forEach(word => {
+      word.setAttribute('draggable', true);
+      word.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', word.dataset.id);
+      });
+    });
+
+    fields.forEach(field => {
+      field.addEventListener('dragover', e => {
+        e.preventDefault();
+        field.classList.add('over');
+      });
+
+      field.addEventListener('dragleave', () => {
+        field.classList.remove('over');
+      });
+
+      field.addEventListener('drop', e => {
+        const id = e.dataTransfer.getData('text/plain');
+        const word = document.querySelector(`[data-id="${id}"]`);
+        if (word) field.appendChild(word);
+        field.classList.remove('over');
+      });
+    });
+
+    // === Touch-Events ===
     let touched = null;
 
     words.forEach(word => {
-      word.draggable = false; // nur Touch
       word.addEventListener('touchstart', e => {
         touched = word;
         word.style.position = 'absolute';
-        word.style.zIndex = '1000';
+        word.style.zIndex = 1000;
         word.style.pointerEvents = 'none';
       });
 
@@ -172,12 +210,12 @@
       word.addEventListener('touchend', e => {
         const touch = e.changedTouches[0];
         const target = document.elementFromPoint(touch.clientX, touch.clientY);
-        if (target && target.classList.contains('feld')) {
-          target.appendChild(touched);
+        if (target && target.closest('.feld')) {
+          target.closest('.feld').appendChild(touched);
         } else {
-          bank.appendChild(touched);
+          wordBank.appendChild(touched);
         }
-        // Reset
+
         touched.style.position = 'static';
         touched.style.zIndex = '';
         touched.style.left = '';
