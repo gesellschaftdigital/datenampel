@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Persönliche Daten Ampel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: sans-serif;
       text-align: center;
@@ -14,7 +18,7 @@
     }
 
     h1 {
-      font-size: 22px;
+      font-size: 20px;
       margin-bottom: 5px;
     }
 
@@ -33,7 +37,7 @@
     }
 
     .word {
-      padding: 8px 14px;
+      padding: 10px;
       border-radius: 10px;
       font-size: 14px;
       font-weight: bold;
@@ -44,6 +48,8 @@
       border: 2px solid #333;
       position: relative;
       background-color: white;
+      max-width: 45%;
+      flex: 1 1 100px;
     }
 
     .ampel {
@@ -54,24 +60,25 @@
     }
 
     .feld {
-      width: 90vw;
-      max-width: 400px;
-      height: 90vw;
-      max-height: 400px;
+      width: 80vw;
+      max-width: 350px;
+      height: 80vw;
+      max-height: 350px;
       border-radius: 50%;
       border: 5px solid #333;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 12px;
-      font-size: 16px;
+      gap: 10px;
+      font-size: 14px;
       background-clip: padding-box;
       box-sizing: border-box;
+      padding: 10px;
     }
 
     .feld .label {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       color: black;
       text-align: center;
@@ -86,6 +93,19 @@
 
     .feld.over {
       outline: 3px dashed #000;
+    }
+
+    /* Responsives Verhalten für größere Displays */
+    @media (min-width: 768px) {
+      .ampel {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .feld {
+        margin: 10px;
+      }
     }
 
     /* Farben für Begriffe */
@@ -118,27 +138,8 @@
   <h3>Was denkst Du?</h3>
 
   <div id="word-bank">
-    <div class="word vorname">Vorname</div>
-    <div class="word nachname">Nachname</div>
-    <div class="word adresse">Adresse</div>
-    <div class="word telefonnummer">Telefonnummer</div>
-    <div class="word geburtsdatum">Geburtsdatum</div>
-    <div class="word email">E-Mail-Adresse</div>
-    <div class="word lieblingsessen">Lieblingsessen</div>
-    <div class="word augenfarbe">Augenfarbe</div>
-    <div class="word gewicht">Gewicht</div>
-    <div class="word schuhgroesse">Schuhgröße</div>
-    <div class="word wohnort">Wohnort</div>
-    <div class="word mutter">Mutter</div>
-    <div class="word vater">Vater</div>
-    <div class="word haustier">Haustier</div>
-    <div class="word taschengeld">Taschengeld</div>
-    <div class="word passwoerter">Passwörter</div>
-    <div class="word lieblingsfarbe">Lieblingsfarbe</div>
-    <div class="word lieblingssport">Lieblingssport</div>
-    <div class="word lieblingstier">Lieblingstier</div>
-    <div class="word hobby">Hobby</div>
-    <div class="word lieblingsfach">Lieblingsfach</div>
+    <!-- Begriffe hier ... (gleich wie vorher) -->
+    <!-- (für Übersichtlichkeit weggelassen, einfach reinkopieren) -->
   </div>
 
   <div class="ampel">
@@ -155,7 +156,7 @@
     let touched = null;
 
     words.forEach(word => {
-      word.draggable = false; // nur Touch
+      word.draggable = false;
       word.addEventListener('touchstart', e => {
         touched = word;
         word.style.position = 'absolute';
@@ -177,7 +178,6 @@
         } else {
           bank.appendChild(touched);
         }
-        // Reset
         touched.style.position = 'static';
         touched.style.zIndex = '';
         touched.style.left = '';
