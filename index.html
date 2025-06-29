@@ -40,7 +40,7 @@
       font-weight: bold;
       cursor: grab;
       user-select: none;
-      touch-action: none;
+      touch-action: none; /* Wichtig für Touch-Drag */
       box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
       border: 2px solid #333;
     }
@@ -65,6 +65,7 @@
       font-size: 18px;
       background-clip: padding-box;
       box-sizing: border-box;
+      position: relative; /* Setzen Sie dies, damit Kinder mit position: absolute darin richtig positioniert werden können, falls nötig, obwohl wir sie zum Body verschieben */
     }
 
     .feld .label {
@@ -74,7 +75,7 @@
       text-align: center;
       max-width: 90%;
       line-height: 1.4;
-      pointer-events: none;
+      pointer-events: none; /* Wichtig, damit Touches/Klicks das Feld darunter erreichen */
     }
 
     .rot    { background-color: #e57373; }
@@ -144,16 +145,20 @@
     const words = document.querySelectorAll('.word');
     const fields = document.querySelectorAll('.feld');
 
+    // Touch-Handling für mobile Geräte
     words.forEach(word => {
       word.addEventListener('touchstart', handleTouchStart);
       word.addEventListener('touchmove', handleTouchMove);
       word.addEventListener('touchend', handleTouchEnd);
+      // Fallback/Standard Drag-and-Drop für Desktop
       word.addEventListener('dragstart', handleDragStart);
     });
 
+    // Event-Listener für Drop-Ziele (Ampel-Felder)
     fields.forEach(field => {
+      // dragover ist für Desktop-Drag-and-Drop wichtig, um das Ablegen zu erlauben
       field.addEventListener('dragover', e => {
-        e.preventDefault();
+        e.preventDefault(); // Ermöglicht das Ablegen
         field.classList.add('over');
       });
 
@@ -161,48 +166,119 @@
         field.classList.remove('over');
       });
 
+      // drop-Event ist für Desktop-Drag-and-Drop wichtig
       field.addEventListener('drop', e => {
+        e.preventDefault(); // Verhindert Standard-Drop-Verhalten
         const wordId = e.dataTransfer.getData('text/plain');
         const word = document.querySelector(`[data-id='${wordId}']`);
-        field.appendChild(word);
+        if (word) {
+            field.appendChild(word);
+        }
         field.classList.remove('over');
       });
     });
 
-    // Touch handling
-    let touchedElement = null;
+    // --- Globale Variablen für Touch-Handling ---
+    let touchedElement = null; // Das aktuell berührte/gezogene Element
+    let initialTouchX, initialTouchY; // Offset des Touch-Punkts innerhalb des Elements
 
+    // --- TouchStart Event Handler ---
     function handleTouchStart(e) {
+      // Findet das nächstgelegene ".word"-Element zum Touch-Ziel
       touchedElement = e.target.closest('.word');
-      touchedElement.style.position = 'absolute';
-      touchedElement.style.zIndex = 1000;
+      if (!touchedElement) return; // Wenn kein Wort gefunden wurde, abbrechen
+
+      // Speichern der ursprünglichen Eltern-ID für den Fall, dass das Element zurück muss
+      touchedElement.dataset.originalParentId = touchedElement.parentNode.id;
+
+      // Vorübergehendes Styling für das gezogene Element
+      touchedElement.style.position = 'absolute'; // Absolut positionieren, um es frei bewegen zu können
+      touchedElement.style.zIndex = '1000'; // Sicherstellen, dass es über anderen Elementen liegt
+
+      const touch = e.touches[0]; // Erster Touch-Punkt
+      const rect = touchedElement.getBoundingClientRect(); // Größe und Position des Elements
+      // Berechnet den Offset des Touch-Punkts relativ zur oberen linken Ecke des Elements
+      initialTouchX = touch.clientX - rect.left;
+      initialTouchY = touch.clientY - rect.top;
+
+      // Das Element vorübergehend an den Body anhängen, um Probleme mit dem Z-Index
+      // und der Positionierung innerhalb des ursprünglichen Elternteils zu vermeiden.
+      document.body.appendChild(touchedElement);
     }
 
+    // --- TouchMove Event Handler ---
     function handleTouchMove(e) {
-      e.preventDefault();
+      e.preventDefault(); // Verhindert Standard-Browserverhalten wie Scrollen
+      if (!touchedElement) return;
+
       const touch = e.touches[0];
-      touchedElement.style.left = touch.pageX - touchedElement.offsetWidth / 2 + 'px';
-      touchedElement.style.top = touch.pageY - touchedElement.offsetHeight / 2 + 'px';
+      // Aktualisiert die Position des Elements basierend auf dem Touch-Punkt und dem initialen Offset
+      touchedElement.style.left = (touch.pageX - initialTouchX) + 'px';
+      touchedElement.style.top = (touch.pageY - initialTouchY) + 'px';
+
+      // Visuelles Feedback für Drop-Ziele: Fügt/entfernt die 'over'-Klasse
+      fields.forEach(field => {
+        const rect = field.getBoundingClientRect();
+        // Überprüft, ob der Touch-Punkt über dem aktuellen Feld ist
+        if (
+          touch.clientX > rect.left &&
+          touch.clientX < rect.right &&
+          touch.clientY > rect.top &&
+          touch.clientY < rect.bottom
+        ) {
+          field.classList.add('over');
+        } else {
+          field.classList.remove('over');
+        }
+      });
     }
 
+    // --- TouchEnd Event Handler ---
     function handleTouchEnd(e) {
-      const touch = e.changedTouches[0];
+      if (!touchedElement) return;
+
+      const touch = e.changedTouches[0]; // Der Touch, der losgelassen wurde
+      // Ermittelt das Element unter dem Touch-Punkt zum Zeitpunkt des Loslassens
       const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (dropTarget && dropTarget.classList.contains('feld')) {
-        dropTarget.appendChild(touchedElement);
-      } else {
-        document.getElementById('word-bank').appendChild(touchedElement);
+
+      let droppedIntoField = false;
+      fields.forEach(field => {
+        // Überprüft, ob das Drop-Ziel das Feld selbst ist oder ein Kindelement des Feldes
+        if (field === dropTarget || (dropTarget && field.contains(dropTarget))) {
+          field.appendChild(touchedElement); // << Hier wird das gezogene Element dem Feld zugewiesen
+          field.classList.remove('over');
+          droppedIntoField = true;
+          // Füge hier ein Log hinzu, um zu sehen, ob dieser Teil erreicht wird
+          console.log("Element wurde in Feld abgelegt:", field.dataset.category);
+        } else {
+          field.classList.remove('over'); // Entfernt 'over'-Klasse, wenn nicht abgelegt
+        }
+      });
+
+      // Wenn das Element in kein gültiges Feld abgelegt wurde, geht es zurück zur Wortbank
+      if (!droppedIntoField) {
+        const wordBank = document.getElementById('word-bank');
+        if (wordBank) {
+            wordBank.appendChild(touchedElement);
+            console.log("Element wurde zurück zur Wortbank bewegt.");
+        }
       }
-      touchedElement.style.position = 'static';
-      touchedElement.style.left = '';
-      touchedElement.style.top = '';
-      touchedElement.style.zIndex = '';
+
+      // Zurücksetzen der temporären Styling-Eigenschaften
+      // Dies ist entscheidend, damit das Element in seinem neuen Eltern-Container bleibt
+      touchedElement.style.position = ''; // Setzt Position auf Standard (z.B. static oder relative des Parents)
+      touchedElement.style.left = '';     // Entfernt die absolute linke Position
+      touchedElement.style.top = '';      // Entfernt die absolute obere Position
+      touchedElement.style.zIndex = '';   // Setzt Z-Index zurück
+      touchedElement = null; // Setzt die Referenz auf das gezogene Element zurück
     }
 
-    // Drag & Drop ID zuweisen
+    // --- Drag-and-Drop ID Zuweisung (für Desktop) ---
     words.forEach((w, i) => w.setAttribute('data-id', 'w' + i));
 
+    // --- DragStart Event Handler (für Desktop) ---
     function handleDragStart(e) {
+      // Setzt die Daten, die während des Drag-and-Drops übertragen werden
       e.dataTransfer.setData('text/plain', e.target.closest('.word').dataset.id);
     }
   </script>
