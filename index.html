@@ -3,79 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <title>Persönliche Daten Ampel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 20px;
+      padding: 10px;
       margin: 0;
       background-color: #f5f5f5;
-      color: #000;
     }
 
     h1 {
-      font-size: 26px;
+      font-size: 22px;
       margin-bottom: 5px;
     }
 
     h3 {
       font-weight: normal;
       color: #555;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     #word-bank {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       justify-content: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .word {
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 16px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 14px;
       font-weight: bold;
       cursor: grab;
       user-select: none;
-      touch-action: none; /* Wichtig für Touch-Drag */
+      touch-action: none;
       box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
       border: 2px solid #333;
+      position: relative;
+      background-color: white;
     }
 
     .ampel {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
+      gap: 30px;
     }
 
     .feld {
-      width: 400px;
-      height: 400px;
+      width: 90vw;
+      max-width: 400px;
+      height: 90vw;
+      max-height: 400px;
       border-radius: 50%;
       border: 5px solid #333;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 15px;
-      font-size: 18px;
+      gap: 12px;
+      font-size: 16px;
       background-clip: padding-box;
       box-sizing: border-box;
-      position: relative; /* Setzen Sie dies, damit Kinder mit position: absolute darin richtig positioniert werden können, falls nötig, obwohl wir sie zum Body verschieben */
     }
 
     .feld .label {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: bold;
       color: black;
       text-align: center;
       max-width: 90%;
-      line-height: 1.4;
-      pointer-events: none; /* Wichtig, damit Touches/Klicks das Feld darunter erreichen */
+      line-height: 1.3;
+      pointer-events: none;
     }
 
     .rot    { background-color: #e57373; }
@@ -83,26 +85,31 @@
     .gruen  { background-color: #81c784; }
 
     .feld.over {
-      outline: 4px dashed #000;
+      outline: 3px dashed #000;
     }
 
-    /* Pastellfarben zugewiesen */
-    .vorname         { background-color: #f28b82; color: black; }
-    .nachname        { background-color: #aecbfa; color: black; }
-    .adresse         { background-color: #ccff90; color: black; }
-    .telefonnummer   { background-color: #ffd6a5; color: black; }
-    .geburtsdatum    { background-color: #ff9aa2; color: black; }
-    .email           { background-color: #ffe0ac; color: black; }
-    .lieblingsessen  { background-color: #d7aefb; color: black; }
-    .augenfarbe      { background-color: #a7ffeb; color: black; }
-    .gewicht         { background-color: #c8e6c9; color: black; }
-    .schuhgroesse    { background-color: #fbd786; color: black; }
-    .wohnort         { background-color: #fff59d; color: black; }
-    .mutter          { background-color: #e6ee9c; color: black; }
-    .vater           { background-color: #b39ddb; color: black; }
-    .haustier        { background-color: #b2ebf2; color: black; }
-    .taschengeld     { background-color: #f48fb1; color: black; }
-    .passwoerter     { background-color: #c5e1a5; color: black; }
+    /* Farben für Begriffe */
+    .vorname         { background-color: #f28b82; }
+    .nachname        { background-color: #aecbfa; }
+    .adresse         { background-color: #ccff90; }
+    .telefonnummer   { background-color: #ffd6a5; }
+    .geburtsdatum    { background-color: #ff9aa2; }
+    .email           { background-color: #ffe0ac; }
+    .lieblingsessen  { background-color: #d7aefb; }
+    .augenfarbe      { background-color: #a7ffeb; }
+    .gewicht         { background-color: #c8e6c9; }
+    .schuhgroesse    { background-color: #fbd786; }
+    .wohnort         { background-color: #fff59d; }
+    .mutter          { background-color: #e6ee9c; }
+    .vater           { background-color: #b39ddb; }
+    .haustier        { background-color: #b2ebf2; }
+    .taschengeld     { background-color: #f48fb1; }
+    .passwoerter     { background-color: #c5e1a5; }
+    .lieblingsfarbe  { background-color: #f4cccc; }
+    .lieblingssport  { background-color: #d9ead3; }
+    .lieblingstier   { background-color: #cfe2f3; }
+    .hobby           { background-color: #e7e6ff; }
+    .lieblingsfach   { background-color: #fff2cc; }
   </style>
 </head>
 <body>
@@ -111,176 +118,74 @@
   <h3>Was denkst Du?</h3>
 
   <div id="word-bank">
-    <div class="word vorname" draggable="true" data-text="Vorname">Vorname</div>
-    <div class="word nachname" draggable="true" data-text="Nachname">Nachname</div>
-    <div class="word adresse" draggable="true" data-text="Adresse">Adresse</div>
-    <div class="word telefonnummer" draggable="true" data-text="Telefonnummer">Telefonnummer</div>
-    <div class="word geburtsdatum" draggable="true" data-text="Geburtsdatum">Geburtsdatum</div>
-    <div class="word email" draggable="true" data-text="E-Mail-Adresse">E-Mail-Adresse</div>
-    <div class="word lieblingsessen" draggable="true" data-text="Lieblingsessen">Lieblingsessen</div>
-    <div class="word augenfarbe" draggable="true" data-text="Augenfarbe">Augenfarbe</div>
-    <div class="word gewicht" draggable="true" data-text="Gewicht">Gewicht</div>
-    <div class="word schuhgroesse" draggable="true" data-text="Schuhgröße">Schuhgröße</div>
-    <div class="word wohnort" draggable="true" data-text="Wohnort">Wohnort</div>
-    <div class="word mutter" draggable="true" data-text="Mutter">Mutter</div>
-    <div class="word vater" draggable="true" data-text="Vater">Vater</div>
-    <div class="word haustier" draggable="true" data-text="Haustier">Haustier</div>
-    <div class="word taschengeld" draggable="true" data-text="Taschengeld">Taschengeld</div>
-    <div class="word passwoerter" draggable="true" data-text="Passwörter">Passwörter</div>
+    <div class="word vorname">Vorname</div>
+    <div class="word nachname">Nachname</div>
+    <div class="word adresse">Adresse</div>
+    <div class="word telefonnummer">Telefonnummer</div>
+    <div class="word geburtsdatum">Geburtsdatum</div>
+    <div class="word email">E-Mail-Adresse</div>
+    <div class="word lieblingsessen">Lieblingsessen</div>
+    <div class="word augenfarbe">Augenfarbe</div>
+    <div class="word gewicht">Gewicht</div>
+    <div class="word schuhgroesse">Schuhgröße</div>
+    <div class="word wohnort">Wohnort</div>
+    <div class="word mutter">Mutter</div>
+    <div class="word vater">Vater</div>
+    <div class="word haustier">Haustier</div>
+    <div class="word taschengeld">Taschengeld</div>
+    <div class="word passwoerter">Passwörter</div>
+    <div class="word lieblingsfarbe">Lieblingsfarbe</div>
+    <div class="word lieblingssport">Lieblingssport</div>
+    <div class="word lieblingstier">Lieblingstier</div>
+    <div class="word hobby">Hobby</div>
+    <div class="word lieblingsfach">Lieblingsfach</div>
   </div>
 
   <div class="ampel">
-    <div class="feld rot" data-category="rot">
-      <div class="label">Nur ich und innerhalb der Familie</div>
-    </div>
-    <div class="feld gelb" data-category="gelb">
-      <div class="label">Für Freunde okay. Es soll nicht jeder wissen, außer meine Freunde</div>
-    </div>
-    <div class="feld gruen" data-category="gruen">
-      <div class="label">Für alle okay. Kann jeder wissen.</div>
-    </div>
+    <div class="feld rot"><div class="label">Nur ich und innerhalb der Familie</div></div>
+    <div class="feld gelb"><div class="label">Es soll nicht jeder wissen, außer meine Freunde</div></div>
+    <div class="feld gruen"><div class="label">Für alle okay. Kann jeder wissen.</div></div>
   </div>
 
   <script>
     const words = document.querySelectorAll('.word');
     const fields = document.querySelectorAll('.feld');
+    const bank = document.getElementById('word-bank');
 
-    // Touch-Handling für mobile Geräte
+    let touched = null;
+
     words.forEach(word => {
-      word.addEventListener('touchstart', handleTouchStart);
-      word.addEventListener('touchmove', handleTouchMove);
-      word.addEventListener('touchend', handleTouchEnd);
-      // Fallback/Standard Drag-and-Drop für Desktop
-      word.addEventListener('dragstart', handleDragStart);
-    });
-
-    // Event-Listener für Drop-Ziele (Ampel-Felder)
-    fields.forEach(field => {
-      // dragover ist für Desktop-Drag-and-Drop wichtig, um das Ablegen zu erlauben
-      field.addEventListener('dragover', e => {
-        e.preventDefault(); // Ermöglicht das Ablegen
-        field.classList.add('over');
+      word.draggable = false; // nur Touch
+      word.addEventListener('touchstart', e => {
+        touched = word;
+        word.style.position = 'absolute';
+        word.style.zIndex = '1000';
+        word.style.pointerEvents = 'none';
       });
 
-      field.addEventListener('dragleave', () => {
-        field.classList.remove('over');
+      word.addEventListener('touchmove', e => {
+        const touch = e.touches[0];
+        word.style.left = `${touch.pageX - word.offsetWidth / 2}px`;
+        word.style.top = `${touch.pageY - word.offsetHeight / 2}px`;
       });
 
-      // drop-Event ist für Desktop-Drag-and-Drop wichtig
-      field.addEventListener('drop', e => {
-        e.preventDefault(); // Verhindert Standard-Drop-Verhalten
-        const wordId = e.dataTransfer.getData('text/plain');
-        const word = document.querySelector(`[data-id='${wordId}']`);
-        if (word) {
-            field.appendChild(word);
-        }
-        field.classList.remove('over');
-      });
-    });
-
-    // --- Globale Variablen für Touch-Handling ---
-    let touchedElement = null; // Das aktuell berührte/gezogene Element
-    let initialTouchX, initialTouchY; // Offset des Touch-Punkts innerhalb des Elements
-
-    // --- TouchStart Event Handler ---
-    function handleTouchStart(e) {
-      // Findet das nächstgelegene ".word"-Element zum Touch-Ziel
-      touchedElement = e.target.closest('.word');
-      if (!touchedElement) return; // Wenn kein Wort gefunden wurde, abbrechen
-
-      // Speichern der ursprünglichen Eltern-ID für den Fall, dass das Element zurück muss
-      touchedElement.dataset.originalParentId = touchedElement.parentNode.id;
-
-      // Vorübergehendes Styling für das gezogene Element
-      touchedElement.style.position = 'absolute'; // Absolut positionieren, um es frei bewegen zu können
-      touchedElement.style.zIndex = '1000'; // Sicherstellen, dass es über anderen Elementen liegt
-
-      const touch = e.touches[0]; // Erster Touch-Punkt
-      const rect = touchedElement.getBoundingClientRect(); // Größe und Position des Elements
-      // Berechnet den Offset des Touch-Punkts relativ zur oberen linken Ecke des Elements
-      initialTouchX = touch.clientX - rect.left;
-      initialTouchY = touch.clientY - rect.top;
-
-      // Das Element vorübergehend an den Body anhängen, um Probleme mit dem Z-Index
-      // und der Positionierung innerhalb des ursprünglichen Elternteils zu vermeiden.
-      document.body.appendChild(touchedElement);
-    }
-
-    // --- TouchMove Event Handler ---
-    function handleTouchMove(e) {
-      e.preventDefault(); // Verhindert Standard-Browserverhalten wie Scrollen
-      if (!touchedElement) return;
-
-      const touch = e.touches[0];
-      // Aktualisiert die Position des Elements basierend auf dem Touch-Punkt und dem initialen Offset
-      touchedElement.style.left = (touch.pageX - initialTouchX) + 'px';
-      touchedElement.style.top = (touch.pageY - initialTouchY) + 'px';
-
-      // Visuelles Feedback für Drop-Ziele: Fügt/entfernt die 'over'-Klasse
-      fields.forEach(field => {
-        const rect = field.getBoundingClientRect();
-        // Überprüft, ob der Touch-Punkt über dem aktuellen Feld ist
-        if (
-          touch.clientX > rect.left &&
-          touch.clientX < rect.right &&
-          touch.clientY > rect.top &&
-          touch.clientY < rect.bottom
-        ) {
-          field.classList.add('over');
+      word.addEventListener('touchend', e => {
+        const touch = e.changedTouches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        if (target && target.classList.contains('feld')) {
+          target.appendChild(touched);
         } else {
-          field.classList.remove('over');
+          bank.appendChild(touched);
         }
+        // Reset
+        touched.style.position = 'static';
+        touched.style.zIndex = '';
+        touched.style.left = '';
+        touched.style.top = '';
+        touched.style.pointerEvents = 'auto';
+        touched = null;
       });
-    }
-
-    // --- TouchEnd Event Handler ---
-    function handleTouchEnd(e) {
-      if (!touchedElement) return;
-
-      const touch = e.changedTouches[0]; // Der Touch, der losgelassen wurde
-      // Ermittelt das Element unter dem Touch-Punkt zum Zeitpunkt des Loslassens
-      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-
-      let droppedIntoField = false;
-      fields.forEach(field => {
-        // Überprüft, ob das Drop-Ziel das Feld selbst ist oder ein Kindelement des Feldes
-        if (field === dropTarget || (dropTarget && field.contains(dropTarget))) {
-          field.appendChild(touchedElement); // << Hier wird das gezogene Element dem Feld zugewiesen
-          field.classList.remove('over');
-          droppedIntoField = true;
-          // Füge hier ein Log hinzu, um zu sehen, ob dieser Teil erreicht wird
-          console.log("Element wurde in Feld abgelegt:", field.dataset.category);
-        } else {
-          field.classList.remove('over'); // Entfernt 'over'-Klasse, wenn nicht abgelegt
-        }
-      });
-
-      // Wenn das Element in kein gültiges Feld abgelegt wurde, geht es zurück zur Wortbank
-      if (!droppedIntoField) {
-        const wordBank = document.getElementById('word-bank');
-        if (wordBank) {
-            wordBank.appendChild(touchedElement);
-            console.log("Element wurde zurück zur Wortbank bewegt.");
-        }
-      }
-
-      // Zurücksetzen der temporären Styling-Eigenschaften
-      // Dies ist entscheidend, damit das Element in seinem neuen Eltern-Container bleibt
-      touchedElement.style.position = ''; // Setzt Position auf Standard (z.B. static oder relative des Parents)
-      touchedElement.style.left = '';     // Entfernt die absolute linke Position
-      touchedElement.style.top = '';      // Entfernt die absolute obere Position
-      touchedElement.style.zIndex = '';   // Setzt Z-Index zurück
-      touchedElement = null; // Setzt die Referenz auf das gezogene Element zurück
-    }
-
-    // --- Drag-and-Drop ID Zuweisung (für Desktop) ---
-    words.forEach((w, i) => w.setAttribute('data-id', 'w' + i));
-
-    // --- DragStart Event Handler (für Desktop) ---
-    function handleDragStart(e) {
-      // Setzt die Daten, die während des Drag-and-Drops übertragen werden
-      e.dataTransfer.setData('text/plain', e.target.closest('.word').dataset.id);
-    }
+    });
   </script>
 
 </body>
